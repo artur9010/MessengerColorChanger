@@ -4,6 +4,10 @@ from PySide.QtGui import *
 import sys
 from PySide import QtCore, QtGui
 
+login_value = ""
+password_value = ""
+id_value = 0
+color_value = "#2137ff"
 
 class MessengerColorChanger(QtGui.QWidget):
     def __init__(self, parent=None):
@@ -18,51 +22,53 @@ class MessengerColorChanger(QtGui.QWidget):
         grid.setSpacing(10)
 
         # login
-        login = QtGui.QLineEdit()
-        login.setMaxLength(128)
+        self.login = QtGui.QLineEdit()
+        self.login.setMaxLength(128)
+        self.login.setText("")
 
         login_label = QtGui.QLabel("Login")
 
         grid.addWidget(login_label, 0, 0)
-        grid.addWidget(login, 0, 1)
+        grid.addWidget(self.login, 0, 1)
 
         # password
         #TODO: "pokaz haslo"
         #TODO: zapamietaj haslo
-        password = QtGui.QLineEdit()
-        password.setMaxLength(64)
-        password.setEchoMode(QtGui.QLineEdit.Password)
+        self.password = QtGui.QLineEdit()
+        self.password.setMaxLength(64)
+        self.password.setEchoMode(QtGui.QLineEdit.Password)
 
         password_label = QtGui.QLabel("Hasło")
 
         grid.addWidget(password_label, 1, 0)
-        grid.addWidget(password, 1, 1)
+        grid.addWidget(self.password, 1, 1)
 
         # id
-        id = QtGui.QLineEdit()
-        id.setMaxLength(30)
+        self.id = QtGui.QLineEdit()
+        self.id.setMaxLength(30)
 
         id_label = QtGui.QLabel("ID rozmowy")
 
         grid.addWidget(id_label, 2, 0)
-        grid.addWidget(id, 2, 1)
+        grid.addWidget(self.id, 2, 1)
 
         # color
         #todo: color picker
-        color = QtGui.QLineEdit()
-        color.setMaxLength(8)
+        self.color = QtGui.QLineEdit()
+        self.color.setMaxLength(8)
 
         color_label = QtGui.QLabel("Kolor")
 
         grid.addWidget(color_label, 3, 0)
-        grid.addWidget(color, 3, 1)
+        grid.addWidget(self.color, 3, 1)
 
         # button
-        button = QtGui.QPushButton()
-        button.setText("Do dzieła!")
-        #button.clicked.connect(go(login.text, password.text, id.text, color.text))
-        #button.clicked.connect(syf("osiem"))
-        grid.addWidget(button, 4, 0, 1, 0)
+        self.button = QtGui.QPushButton()
+        self.button.setText("Do dzieła!")
+        self.button.clicked.connect(self.buttonClick)
+        print("[DEBUG]")
+        print(self.login.text())
+        grid.addWidget(self.button, 4, 0, 1, 0)
 
 
         # window
@@ -72,9 +78,17 @@ class MessengerColorChanger(QtGui.QWidget):
         self.setWindowTitle("Messenger Color Changer")
         self.show()
 
+        def buttonClick():
+            print("[DEBUG] buttonClick")
+            go(self.login.text(), self.password.text(), self.id.text(), self.color.text())
 
-def syf(text):
-    print(text)
+
+def button_click():
+    print("test")
+    #go("arturmotyka99@gmail.com", "kziciota", 818700278230570, "#515151")
+    print("test2")
+    print("")
+
 
 
 def go(login, password, id, color):
@@ -97,12 +111,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-#haslo = getpass.getpass()
-#messenger = Messenger("arturmotyka99@gmail.com", haslo)
-#idkonfy = input("Podaj id konfy:")
-#konfa = messenger.get_thread(int(idkonfy))
-#obecny = konfa.custom_color
-#nowy = input("Podaj nowy zajebisty kolor (bez hasza):")
-#konfa.set_custom_color("#" + nowy)
-#konfa.set_custom_color(obecny)
