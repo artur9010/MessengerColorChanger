@@ -4,20 +4,15 @@ from PySide.QtGui import *
 import sys
 from PySide import QtCore, QtGui
 
-login_value = ""
-password_value = ""
-id_value = 0
-color_value = "#2137ff"
 
 class MessengerColorChanger(QtGui.QWidget):
     def __init__(self, parent=None):
         super(MessengerColorChanger, self).__init__(parent)
         self.setupUi()
 
-
     def setupUi(self):
-        #Todo: lista konf
-        #todo: szukajka konf
+        # Todo: lista konf
+        # todo: szukajka konf
         grid = QtGui.QGridLayout()
         grid.setSpacing(10)
 
@@ -32,8 +27,8 @@ class MessengerColorChanger(QtGui.QWidget):
         grid.addWidget(self.login, 0, 1)
 
         # password
-        #TODO: "pokaz haslo"
-        #TODO: zapamietaj haslo
+        # TODO: "pokaz haslo"
+        # TODO: zapamietaj haslo
         self.password = QtGui.QLineEdit()
         self.password.setMaxLength(64)
         self.password.setEchoMode(QtGui.QLineEdit.Password)
@@ -53,7 +48,7 @@ class MessengerColorChanger(QtGui.QWidget):
         grid.addWidget(self.id, 2, 1)
 
         # color
-        #todo: color picker
+        # todo: color picker
         self.color = QtGui.QLineEdit()
         self.color.setMaxLength(8)
 
@@ -65,49 +60,60 @@ class MessengerColorChanger(QtGui.QWidget):
         # button
         self.button = QtGui.QPushButton()
         self.button.setText("Do dzieła!")
-        self.button.clicked.connect(self.buttonClick)
-        print("[DEBUG]")
-        print(self.login.text())
+        print("debug 1")
+        self.button.clicked.connect(button_click)
+        print("debug 2")
         grid.addWidget(self.button, 4, 0, 1, 0)
 
+        global instance
+        instance = self
 
         # window
         self.setLayout(grid)
 
-        self.setGeometry(600, 300, 600, 400) #polozeniex, polozeniey, x, y
+        self.setGeometry(600, 300, 600, 250)  # polozeniex, polozeniey, x, y
         self.setWindowTitle("Messenger Color Changer")
         self.show()
 
-        def buttonClick():
-            print("[DEBUG] buttonClick")
-            go(self.login.text(), self.password.text(), self.id.text(), self.color.text())
-
 
 def button_click():
-    print("test")
-    #go("arturmotyka99@gmail.com", "kziciota", 818700278230570, "#515151")
-    print("test2")
+    print("debug start")
+    print(instance.login.text())
+    print("debug 3")
+    #print(instance.password.text())
+    print("debug 4")
+    print(instance.id.text())
+    print("debug 5")
+    print(instance.color.text())
+    print("debug 6")
+    if not go(instance.login.text(), instance.password.text(), instance.id.text(), instance.color.text()):
+        print("debug = brakuje czegos")
+    else:
+        print("debug = ok")
+    print("debug end")
     print("")
 
 
-
 def go(login, password, id, color):
-    if not bool(str(login).strip()):
-        return
-    if not bool(str(password).strip()):
-        return
-    if not bool(str(id).strip()):
-        return
-    if not bool(str(color).strip()):
-        return
+    if not str(login).strip():
+        return False
+    if not str(password).strip():
+        return False
+    if not str(id).strip():
+        return False
+    if not str(color).strip():
+        return False
     messenger = Messenger(login, password)
     konfa = messenger.get_thread(int(id))
     konfa.set_custom_color(color)
+    return True
+
 
 def main():
     app = QApplication(sys.argv)
     frame = MessengerColorChanger()
     app.exec_()
+
 
 if __name__ == '__main__':
     main()
