@@ -17,7 +17,7 @@ class MessengerColorChanger(QtGui.QWidget):
         # Todo: lista konf
         # todo: szukajka konf
         grid = QtGui.QGridLayout()
-        grid.setSpacing(20)
+        grid.setSpacing(5)
 
         self.infobox = QtGui.QLineEdit()
         self.infobox.setEnabled(False)
@@ -45,13 +45,20 @@ class MessengerColorChanger(QtGui.QWidget):
         grid.addWidget(password_label, 2, 0)
         grid.addWidget(self.password, 2, 1)
 
+        # pokaz haslo
+        # TODO: działać
+        self.show_password = QtGui.QCheckBox("Pokaż hasło", self)
+        self.show_password.clicked.connect(self.show_password_text)
+
+        grid.addWidget(self.show_password, 3, 0)
+
         # id
         self.id = QtGui.QLineEdit()
 
         id_label = QtGui.QLabel("ID rozmowy")
 
-        grid.addWidget(id_label, 3, 0)
-        grid.addWidget(self.id, 3, 1)
+        grid.addWidget(id_label, 4, 0)
+        grid.addWidget(self.id, 4, 1)
 
         # color
         # todo: color picker
@@ -61,8 +68,8 @@ class MessengerColorChanger(QtGui.QWidget):
 
         color_label = QtGui.QLabel("Kolor")
 
-        grid.addWidget(color_label, 4, 0)
-        grid.addWidget(self.color, 4, 1)
+        grid.addWidget(color_label, 5, 0)
+        grid.addWidget(self.color, 5, 1)
 
         # button
         self.button = QtGui.QPushButton()
@@ -70,7 +77,7 @@ class MessengerColorChanger(QtGui.QWidget):
         print("debug 1")
         self.button.clicked.connect(self.button_click)
         print("debug 2")
-        grid.addWidget(self.button, 5, 0, 1, 0)
+        grid.addWidget(self.button, 6, 0, 1, 0)
 
         global instance
         instance = self
@@ -96,6 +103,7 @@ class MessengerColorChanger(QtGui.QWidget):
         print("debug 6")
         if not self.go(instance.login.text(), instance.password.text(), instance.id.text(), instance.color.text()):
             print("debug = brakuje czegos")
+            instance.infobox.setText("Któreś z poniższych pól jest puste lub dane są nieprawidłowe!")
             QMessageBox.critical(self, "Błędzik", "Któreś z powyższych pól jest puste lub dane są nieprawidłowe.", QMessageBox.Ok)
         else:
             print("debug = ok")
@@ -126,12 +134,23 @@ class MessengerColorChanger(QtGui.QWidget):
             return True
         except:
             print("Unexpected error:", sys.exc_info()[0])
-            instance.infobox.setText("Któreś z poniższych pól jest puste lub dane są nieprawidłowe!")
             return False
 
-    def show_password(self):
-        #todo: opcja wyswietlania hasla
-        print("nope")
+    def show_password_text(self):
+        if instance.show_password.checkState():
+            instance.password.setEchoMode(QtGui.QLineEdit.Normal)
+        else:
+            instance.password.setEchoMode(QtGui.QLineEdit.Password)
+
+    def remember(self):
+        # todo: napisac
+        # todo: zapisywanie loginu i hasla
+        print("Need to be written")
+
+    def fill_login_and_password(self):
+        # todo: napisac
+        # todo: wczytywanie loginu i hasla
+        print("Need to be written")
 
 
 def main():
