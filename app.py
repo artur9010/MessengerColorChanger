@@ -4,6 +4,9 @@ from PySide.QtCore import *
 from PySide.QtGui import *
 import sys
 
+#for tests:
+#id 100002217879841
+#color #2137ff
 
 class MessengerColorChanger(QtGui.QWidget):
     def __init__(self, parent=None):
@@ -93,7 +96,6 @@ class MessengerColorChanger(QtGui.QWidget):
         print("debug 6")
         if not self.go(instance.login.text(), instance.password.text(), instance.id.text(), instance.color.text()):
             print("debug = brakuje czegos")
-            instance.infobox.setText("Któreś z poniższych pól jest puste lub dane są nieprawidłowe!")
             QMessageBox.critical(self, "Błędzik", "Któreś z powyższych pól jest puste lub dane są nieprawidłowe.", QMessageBox.Ok)
         else:
             print("debug = ok")
@@ -120,9 +122,16 @@ class MessengerColorChanger(QtGui.QWidget):
             messenger = Messenger(login, password)
             konfa = messenger.get_thread(int(id))
             konfa.set_custom_color(color)
+            instance.infobox.setText("Kolor zmieniony!")
+            return True
         except:
             print("Unexpected error:", sys.exc_info()[0])
+            instance.infobox.setText("Któreś z poniższych pól jest puste lub dane są nieprawidłowe!")
             return False
+
+    def show_password(self):
+        #todo: opcja wyswietlania hasla
+        print("nope")
 
 
 def main():
