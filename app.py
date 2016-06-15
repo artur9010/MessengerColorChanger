@@ -144,7 +144,7 @@ class MessengerColorChanger(QtGui.QWidget):
                 try:
                     os.remove("data.json")
                 except FileNotFoundError:
-                    print("data.json not found")
+                    print("data.json not found, not removing")
                 except:
                     print("Unexpected error:", sys.exc_info()[0])
             return True
