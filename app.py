@@ -2,7 +2,7 @@ from messenger.MessengerAPI.Messenger import Messenger
 from PySide import QtGui
 from PySide.QtCore import *
 from PySide.QtGui import *
-import sys
+import sys, json, os
 
 #for tests:
 #id 100002217879841
@@ -11,6 +11,8 @@ import sys
 class MessengerColorChanger(QtGui.QWidget):
     def __init__(self, parent=None):
         super(MessengerColorChanger, self).__init__(parent)
+        global instance
+        instance = self
         self.setupUi()
 
     def setupUi(self):
@@ -35,7 +37,6 @@ class MessengerColorChanger(QtGui.QWidget):
 
         # password
         # TODO: "pokaz haslo"
-        # TODO: zapamietaj haslo
         self.password = QtGui.QLineEdit()
         self.password.setMaxLength(64)
         self.password.setEchoMode(QtGui.QLineEdit.Password)
@@ -46,7 +47,6 @@ class MessengerColorChanger(QtGui.QWidget):
         grid.addWidget(self.password, 2, 1)
 
         # pokaz haslo
-        # TODO: działać
         self.show_password = QtGui.QCheckBox("Pokaż hasło", self)
         self.show_password.clicked.connect(self.show_password_text)
 
@@ -79,8 +79,15 @@ class MessengerColorChanger(QtGui.QWidget):
         print("debug 2")
         grid.addWidget(self.button, 6, 0, 1, 0)
 
-        global instance
-        instance = self
+        # zapamietaj
+        # TODO: działać
+        self.remember_checkbox = QtGui.QCheckBox("Zapamiętaj hasło (odznacz aby usunąc zapisane dane)", self)
+        self.remember_checkbox.clicked.connect(self.remember_save)
+
+        grid.addWidget(self.remember_checkbox, 7, 0, 1, 0)
+
+        # zaladuj dane
+        self.remember_load()
 
         # window
         self.setLayout(grid)
@@ -131,6 +138,15 @@ class MessengerColorChanger(QtGui.QWidget):
             konfa = messenger.get_thread(int(id))
             konfa.set_custom_color(color)
             instance.infobox.setText("Kolor zmieniony!")
+            if instance.remember_checkbox.checkState():
+                self.remember_save()
+            else: #remove data.json if remeber checkbox is unchecked
+                try:
+                    os.remove("data.json")
+                except FileNotFoundError:
+                    print("data.json not found")
+                except:
+                    print("Unexpected error:", sys.exc_info()[0])
             return True
         except:
             print("Unexpected error:", sys.exc_info()[0])
@@ -142,15 +158,27 @@ class MessengerColorChanger(QtGui.QWidget):
         else:
             instance.password.setEchoMode(QtGui.QLineEdit.Password)
 
-    def remember(self):
-        # todo: napisac
-        # todo: zapisywanie loginu i hasla
-        print("Need to be written")
+    def remember_save(self):
+        dict = {
+            "login": instance.login.text(),
+            "password": instance.password.text(),
+            "id": instance.id.text(),
+            "color": instance.color.text()
+        }
+        with open('data.json', 'w') as fp:
+            json.dump(dict, fp) #write json to data.json
 
-    def fill_login_and_password(self):
-        # todo: napisac
-        # todo: wczytywanie loginu i hasla
-        print("Need to be written")
+    def remember_load(self):
+        try:
+            with open('data.json', 'r') as fp:
+                data = json.load(fp)
+                instance.login.setText(data['login'])
+                instance.password.setText(data['password'])
+                instance.id.setText(data['id'])
+                instance.color.setText(data['color'])
+                instance.remember_checkbox.setChecked(1)
+        except:
+            print("Unexpected error:", sys.exc_info()[0])
 
 
 def main():
