@@ -1,3 +1,3 @@
 [submodule "messenger-api"]
-	path = messenger-api
+	path = messenger
 	url = https://bitbucket.org/juniorjpdj/messenger-api.git
