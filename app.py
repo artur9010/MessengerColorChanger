@@ -1,169 +1,65 @@
 from messenger.MessengerAPI.Messenger import Messenger
 from PySide import QtGui
-from PySide.QtCore import *
 from PySide.QtGui import *
 import sys, json, os
 
-#for tests:
-#id 100002217879841
-#color #2137ff
+# druga wersja zmieniacza kolorkow
 
-class MessengerColorChanger(QtGui.QWidget):
+class MessengerColorChangerLogin(QtGui.QWidget):
     def __init__(self, parent=None):
-        super(MessengerColorChanger, self).__init__(parent)
+        super(MessengerColorChangerLogin, self).__init__(parent)
         global instance
         instance = self
         self.setupUi()
 
     def setupUi(self):
-        # Todo: lista konf
-        # todo: szukajka konf
         grid = QtGui.QGridLayout()
-        grid.setSpacing(5)
+        grid.setSpacing(15)
 
-        self.infobox = QtGui.QLineEdit()
-        self.infobox.setEnabled(False)
+        login_label = QLabel("Login")
+        self.login = QLineEdit()
 
-        grid.addWidget(self.infobox, 0, 0, 1, 0)
-
-        # login
-        self.login = QtGui.QLineEdit()
-        self.login.setMaxLength(128)
-
-        login_label = QtGui.QLabel("Login")
-
-        grid.addWidget(login_label, 1, 0)
-        grid.addWidget(self.login, 1, 1)
-
-        # password
-        # TODO: "pokaz haslo"
-        self.password = QtGui.QLineEdit()
+        password_label = QLabel("Hasło")
+        self.password = QLineEdit()
         self.password.setMaxLength(64)
         self.password.setEchoMode(QtGui.QLineEdit.Password)
 
-        password_label = QtGui.QLabel("Hasło")
+        login_button = QPushButton("Zaloguj się")
+        login_button.clicked.connect(self.login_to_facebook)
 
-        grid.addWidget(password_label, 2, 0)
-        grid.addWidget(self.password, 2, 1)
+        self.remember_checkbox = QCheckBox("Zapamiętaj login (bez hasła)")
 
-        # pokaz haslo
-        self.show_password = QtGui.QCheckBox("Pokaż hasło", self)
-        self.show_password.clicked.connect(self.show_password_text)
+        grid.addWidget(login_label, 0, 0)
+        grid.addWidget(self.login, 0, 1)
+        grid.addWidget(password_label, 1, 0)
+        grid.addWidget(self.password, 1, 1)
+        grid.addWidget(login_button, 2, 0, 1, 0)
+        grid.addWidget(self.remember_checkbox, 3, 0, 1, 0)
 
-        grid.addWidget(self.show_password, 3, 0)
-
-        # id
-        self.id = QtGui.QLineEdit()
-
-        id_label = QtGui.QLabel("ID rozmowy")
-
-        grid.addWidget(id_label, 4, 0)
-        grid.addWidget(self.id, 4, 1)
-
-        # color
-        # todo: color picker
-        self.color = QtGui.QLineEdit()
-        self.color.setMaxLength(8)
-        #self.color = QtGui.QColorDialog()
-
-        color_label = QtGui.QLabel("Kolor")
-
-        grid.addWidget(color_label, 5, 0)
-        grid.addWidget(self.color, 5, 1)
-
-        # button
-        self.button = QtGui.QPushButton()
-        self.button.setText("Do dzieła!")
-        print("debug 1")
-        self.button.clicked.connect(self.button_click)
-        print("debug 2")
-        grid.addWidget(self.button, 6, 0, 1, 0)
-
-        # zapamietaj
-        # TODO: działać
-        self.remember_checkbox = QtGui.QCheckBox("Zapamiętaj hasło (odznacz aby usunąc zapisane dane)", self)
-        self.remember_checkbox.clicked.connect(self.remember_save)
-
-        grid.addWidget(self.remember_checkbox, 7, 0, 1, 0)
-
-        # zaladuj dane
         self.remember_load()
 
-        # window
         self.setLayout(grid)
-
         self.setGeometry(600, 300, 600, 250)  # polozeniex, polozeniey, x, y
-        self.setWindowTitle("Messenger Color Changer")
+        self.setWindowTitle("Zaloguj się")
         self.show()
 
-
-    def button_click(self):
-        instance.infobox.setText("Sprawdzam dane...")
-        print("debug start")
-        print(instance.login.text())
-        print("debug 3")
-        #print(instance.password.text())
-        print("debug 4")
-        print(instance.id.text())
-        print("debug 5")
-        print(instance.color.text())
-        print("debug 6")
-        if not self.go(instance.login.text(), instance.password.text(), instance.id.text(), instance.color.text()):
-            print("debug = brakuje czegos")
-            instance.infobox.setText("Któreś z poniższych pól jest puste lub dane są nieprawidłowe!")
-            QMessageBox.critical(self, "Błędzik", "Któreś z powyższych pól jest puste lub dane są nieprawidłowe.", QMessageBox.Ok)
-        else:
-            print("debug = ok")
-            instance.infobox.setText("Kolor zmieniony!")
-        print("debug end")
-        print("")
-
-    def go(self, login, password, id, color):
-        if not str(login).strip():
-            return False
-        if len(str(login)) < 5:
-            return False
-        if not str(password).strip():
-            return False
-        if len(str(password)) < 5:
-            return False
-        if not str(id).strip():
-            return False
-        if not str(color).strip():
-            return False
-        if len(str(color)) < 6:
-            return False
-        try:
-            messenger = Messenger(login, password)
-            konfa = messenger.get_thread(int(id))
-            konfa.set_custom_color(color)
-            instance.infobox.setText("Kolor zmieniony!")
-            if instance.remember_checkbox.checkState():
-                self.remember_save()
-            else: #remove data.json if remeber checkbox is unchecked
-                try:
-                    os.remove("data.json")
-                except FileNotFoundError:
-                    print("data.json not found, not removing")
-                except:
-                    print("Unexpected error:", sys.exc_info()[0])
-            return True
-        except:
-            print("Unexpected error:", sys.exc_info()[0])
-            return False
-
-    def show_password_text(self):
-        if instance.show_password.checkState():
-            instance.password.setEchoMode(QtGui.QLineEdit.Normal)
-        else:
-            instance.password.setEchoMode(QtGui.QLineEdit.Password)
+    def login_to_facebook(self):
+        if instance.remember_checkbox.checkState():
+            self.remember_save()
+        else:  # remove data.json if remeber checkbox is unchecked
+            try:
+                os.remove("data.json")
+            except FileNotFoundError:
+                print("data.json not found, not removing")
+            except:
+                print("Unexpected error:", sys.exc_info()[0])
+        login = instance.login.text()
+        password = instance.password.text()
+        MessengerColorChanger(login, password, self)
 
     def remember_save(self):
         dict = {
             "login": instance.login.text(),
-            "password": instance.password.text(),
-            "id": instance.id.text(),
-            "color": instance.color.text()
         }
         with open('data.json', 'w') as fp:
             json.dump(dict, fp) #write json to data.json
@@ -173,17 +69,100 @@ class MessengerColorChanger(QtGui.QWidget):
             with open('data.json', 'r') as fp:
                 data = json.load(fp)
                 instance.login.setText(data['login'])
-                instance.password.setText(data['password'])
-                instance.id.setText(data['id'])
-                instance.color.setText(data['color'])
                 instance.remember_checkbox.setChecked(1)
         except:
             print("Unexpected error:", sys.exc_info()[0])
 
+class MessengerColorChanger(QtGui.QWidget):
+    def __init__(self, login, password, loginwindow, parent=None):
+        super(MessengerColorChanger, self).__init__(parent)
+        try:
+            global messenger
+            messenger = Messenger(login, password)
+            global instance
+            instance = self
+            loginwindow.hide()
+            self.setupUi(messenger)
+        except:
+            QMessageBox.critical(self, "Błędzik", "Nieprawidłowy login lub hasło.",
+                                 QMessageBox.Ok)
+            print("Unexpected error:", sys.exc_info()[0])
+
+    def setupUi(self, messenger):
+        grid = QtGui.QGridLayout()
+        grid.setSpacing(5)
+
+        self.search_box = QLineEdit()
+        self.search_box.textChanged.connect(self.search)
+        grid.addWidget(self.search_box, 0, 0)
+
+        self.conversation_list = QListWidget()
+
+        self.thread_list = messenger.ordered_thread_list
+        for conversation in self.thread_list:
+            self.conversation_list.addItem(conversation.get_name())
+        grid.addWidget(self.conversation_list, 1, 0, 1, 1)
+
+        self.color_picker = QColorDialog()
+        #default facebook colors
+        self.color_picker.setCustomColor(0, 34047)
+        self.color_picker.setCustomColor(1, 4505287)
+        self.color_picker.setCustomColor(2, 16761600)
+        self.color_picker.setCustomColor(3, 16399436)
+        self.color_picker.setCustomColor(4, 14063291)
+        self.color_picker.setCustomColor(5, 6724044)
+        self.color_picker.setCustomColor(6, 1298195)
+        self.color_picker.setCustomColor(7, 16743977)
+        self.color_picker.setCustomColor(8, 15107461)
+        self.color_picker.setCustomColor(9, 7751423)
+        self.color_picker.setCustomColor(10, 2150133)
+        self.color_picker.setCustomColor(11, 6797416)
+        self.color_picker.setCustomColor(12, 13936780)
+        self.color_picker.setCustomColor(13, 16735393)
+        self.color_picker.setCustomColor(14, 10917319)
+        self.color_picker.setCustomColor(15, 16777215) #white
+        #picker options
+        self.color_picker.setOption(QColorDialog.NoButtons, True)
+        self.color_picker.setOption(QColorDialog.DontUseNativeDialog, True)
+        grid.addWidget(self.color_picker, 1, 1, 1, 1)
+
+        button = QPushButton("Do dzieła!")
+        button.clicked.connect(self.change_color)
+        grid.addWidget(button, 2, 0, 1, 0)
+
+        self.setLayout(grid)
+        self.setGeometry(600, 300, 800, 350)  # polozeniex, polozeniey, x, y
+        self.setWindowTitle("Messenger Color Changer")
+        self.show()
+
+    def change_color(self):
+        conversation = instance.thread_list[instance.conversation_list.currentRow()]
+        print(conversation.fbid)
+        color = instance.color_picker.currentColor().name()
+        print(color)
+        thread = messenger.get_thread(conversation.fbid)
+        thread.set_custom_color(color)
+
+    def search(self):
+        #todo: async
+        if instance.search_box.text() == "":
+            instance.thread_list = messenger.ordered_thread_list
+            for conversation in instance.thread_list:
+                instance.conversation_list.addItem(conversation.get_name())
+        else:
+            results = messenger.search(instance.search_box.text(), 20)
+            instance.thread_list = list(results.values())
+            instance.conversation_list.clear()
+            for conversation in instance.thread_list:
+                instance.conversation_list.addItem(conversation.get_name())
+
+
+
+
 
 def main():
     app = QApplication(sys.argv)
-    frame = MessengerColorChanger()
+    frame = MessengerColorChangerLogin()
     app.exec_()
 
 
