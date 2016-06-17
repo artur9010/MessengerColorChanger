@@ -1,4 +1,5 @@
 from messenger.MessengerAPI.Messenger import Messenger
+from messenger.MessengerAPI.Thread import Thread, PrivateThread, GroupThread
 from PySide import QtGui
 from PySide.QtCore import *
 from PySide.QtGui import *
@@ -30,6 +31,8 @@ class MessengerColorChangerLogin(QtGui.QWidget):
 
         password_label = QLabel("Hasło")
         self.password = QLineEdit()
+        self.password.setMaxLength(64)
+        self.password.setEchoMode(QtGui.QLineEdit.Password)
 
         login_button = QPushButton("Zaloguj się")
         login_button.clicked.connect(self.login_to_facebook)
@@ -54,6 +57,7 @@ class MessengerColorChanger(QtGui.QWidget):
     def __init__(self, login, password, loginwindow, parent=None):
         super(MessengerColorChanger, self).__init__(parent)
         try:
+            global messenger
             messenger = Messenger(login, password)
             global instance
             instance = self
@@ -62,6 +66,7 @@ class MessengerColorChanger(QtGui.QWidget):
         except:
             QMessageBox.critical(self, "Błędzik", "Nieprawidłowy login lub hasło.",
                                  QMessageBox.Ok)
+            print("Unexpected error:", sys.exc_info()[0])
 
     def setupUi(self, messenger):
         grid = QtGui.QGridLayout()
@@ -69,17 +74,33 @@ class MessengerColorChanger(QtGui.QWidget):
 
         self.conversation_list = QListWidget()
 
-        thread_list = messenger.ordered_thread_list
-        for user in thread_list:
-            print("---")
-            #print(user.name)
-            print(user.fbid)
-            print("")
-        #print(thread_list)
+        self.thread_list = messenger.ordered_thread_list
+        for conversation in self.thread_list:
+            self.conversation_list.addItem(conversation.get_name())
+        grid.addWidget(self.conversation_list, 0, 0, 0, 1)
 
-        self.setGeometry(600, 300, 600, 250)  # polozeniex, polozeniey, x, y
+        self.color_picker = QColorDialog()
+        self.color_picker.setOption(QColorDialog.NoButtons, True)
+        grid.addWidget(self.color_picker, 0, 1, 1, 1)
+
+        button = QPushButton("Do dzieła!")
+        button.clicked.connect(self.change_color)
+        grid.addWidget(button, 1, 0, 1, 0)
+
+        self.setLayout(grid)
+        self.setGeometry(600, 300, 800, 350)  # polozeniex, polozeniey, x, y
         self.setWindowTitle("Messenger Color Changer")
         self.show()
+
+    def change_color(self):
+        #coś tu w ogóle działa?
+        conversation = instance.thread_list[instance.conversation_list.currentRow()]
+        print(conversation.fbid)
+        color = instance.color_picker.currentColor().name()
+        print(color)
+        thread = messenger.get_thread(conversation.fbid)
+        thread.set_custom_color(color)
+
 
 
 def main():
