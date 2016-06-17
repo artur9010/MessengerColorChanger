@@ -1,19 +1,10 @@
 from messenger.MessengerAPI.Messenger import Messenger
-from messenger.MessengerAPI.Thread import Thread, PrivateThread, GroupThread
 from PySide import QtGui
-from PySide.QtCore import *
 from PySide.QtGui import *
-import sys, json, os
-
-#for tests:
-#id 100002217879841
-#color #2137ff
+import sys
 
 # druga wersja zmieniacza kolorkow
-# todo: lista konf
-# todo: color picker
-# todo: zapamietywanie hasla
-# todo: logowanie przed cala reszto [done]
+# todo: szukajka
 
 class MessengerColorChangerLogin(QtGui.QWidget):
     def __init__(self, parent=None):
