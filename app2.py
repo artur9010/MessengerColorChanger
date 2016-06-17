@@ -81,6 +81,7 @@ class MessengerColorChanger(QtGui.QWidget):
 
         self.color_picker = QColorDialog()
         self.color_picker.setOption(QColorDialog.NoButtons, True)
+        self.color_picker.setOption(QColorDialog.DontUseNativeDialog, True)
         grid.addWidget(self.color_picker, 0, 1, 1, 1)
 
         button = QPushButton("Do dzieła!")
