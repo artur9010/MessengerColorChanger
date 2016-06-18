@@ -1,7 +1,8 @@
 from messenger.MessengerAPI.Messenger import Messenger
 from PySide import QtGui
 from PySide.QtGui import *
-import sys, json, os
+import sys, json, os, asyncio
+
 
 # druga wersja zmieniacza kolorkow
 
@@ -62,7 +63,7 @@ class MessengerColorChangerLogin(QtGui.QWidget):
             "login": instance.login.text(),
         }
         with open('data.json', 'w') as fp:
-            json.dump(dict, fp) #write json to data.json
+            json.dump(dict, fp)  # write json to data.json
 
     def remember_load(self):
         try:
@@ -72,6 +73,7 @@ class MessengerColorChangerLogin(QtGui.QWidget):
                 instance.remember_checkbox.setChecked(1)
         except:
             print("Unexpected error:", sys.exc_info()[0])
+
 
 class MessengerColorChanger(QtGui.QWidget):
     def __init__(self, login, password, loginwindow, parent=None):
@@ -104,7 +106,7 @@ class MessengerColorChanger(QtGui.QWidget):
         grid.addWidget(self.conversation_list, 1, 0, 1, 1)
 
         self.color_picker = QColorDialog()
-        #default facebook colors
+        # default facebook colors
         self.color_picker.setCustomColor(0, 34047)
         self.color_picker.setCustomColor(1, 4505287)
         self.color_picker.setCustomColor(2, 16761600)
@@ -120,8 +122,8 @@ class MessengerColorChanger(QtGui.QWidget):
         self.color_picker.setCustomColor(12, 13936780)
         self.color_picker.setCustomColor(13, 16735393)
         self.color_picker.setCustomColor(14, 10917319)
-        self.color_picker.setCustomColor(15, 16777215) #white
-        #picker options
+        self.color_picker.setCustomColor(15, 16777215)  # white
+        # picker options
         self.color_picker.setOption(QColorDialog.NoButtons, True)
         self.color_picker.setOption(QColorDialog.DontUseNativeDialog, True)
         grid.addWidget(self.color_picker, 1, 1, 1, 1)
@@ -144,7 +146,7 @@ class MessengerColorChanger(QtGui.QWidget):
         thread.set_custom_color(color)
 
     def search(self):
-        #todo: async
+        # todo: async
         if instance.search_box.text() == "":
             instance.thread_list = messenger.ordered_thread_list
             for conversation in instance.thread_list:
@@ -155,9 +157,6 @@ class MessengerColorChanger(QtGui.QWidget):
             instance.conversation_list.clear()
             for conversation in instance.thread_list:
                 instance.conversation_list.addItem(conversation.get_name())
-
-
-
 
 
 def main():
