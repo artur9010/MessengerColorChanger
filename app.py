@@ -106,23 +106,10 @@ class MessengerColorChanger(QtGui.QWidget):
         grid.addWidget(self.conversation_list, 1, 0, 1, 1)
 
         self.color_picker = QColorDialog()
-        # default facebook colors
-        self.color_picker.setCustomColor(0, 34047)
-        self.color_picker.setCustomColor(1, 4505287)
-        self.color_picker.setCustomColor(2, 16761600)
-        self.color_picker.setCustomColor(3, 16399436)
-        self.color_picker.setCustomColor(4, 14063291)
-        self.color_picker.setCustomColor(5, 6724044)
-        self.color_picker.setCustomColor(6, 1298195)
-        self.color_picker.setCustomColor(7, 16743977)
-        self.color_picker.setCustomColor(8, 15107461)
-        self.color_picker.setCustomColor(9, 7751423)
-        self.color_picker.setCustomColor(10, 2150133)
-        self.color_picker.setCustomColor(11, 6797416)
-        self.color_picker.setCustomColor(12, 13936780)
-        self.color_picker.setCustomColor(13, 16735393)
-        self.color_picker.setCustomColor(14, 10917319)
-        self.color_picker.setCustomColor(15, 16777215)  # white
+        # default facebook colors + white at the and
+        colors = [34047, 4505287, 16761600, 16399436, 14063291, 6724044, 1298195, 16743977, 15107461, 7751423, 2150133, 6797416, 13936780, 16735393, 10917319, 16777215]
+        for c in colors:
+            self.color_picker.setCustomColor(colors.index(c), c)
         # picker options
         self.color_picker.setOption(QColorDialog.NoButtons, True)
         self.color_picker.setOption(QColorDialog.DontUseNativeDialog, True)
