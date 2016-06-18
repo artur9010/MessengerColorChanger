@@ -41,7 +41,7 @@ class MessengerColorChangerLogin(QtGui.QWidget):
 
         self.setLayout(grid)
         self.setGeometry(600, 300, 600, 250)
-        self.setWindowTitle("Zaloguj się")
+        self.setWindowTitle("Messenger Color Changer")
         self.show()
 
     def login_to_facebook(self):
