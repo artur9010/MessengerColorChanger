@@ -1,7 +1,7 @@
 from messenger.MessengerAPI.Messenger import Messenger
 from PySide import QtGui
 from PySide.QtGui import *
-import sys, json, os, asyncio
+import sys, json, os
 
 
 # druga wersja zmieniacza kolorkow
@@ -20,15 +20,15 @@ class MessengerColorChangerLogin(QtGui.QWidget):
         login_label = QLabel("Login")
         self.login = QLineEdit()
 
-        password_label = QLabel("Hasło")
+        password_label = QLabel("Password")
         self.password = QLineEdit()
         self.password.setMaxLength(64)
         self.password.setEchoMode(QtGui.QLineEdit.Password)
 
-        login_button = QPushButton("Zaloguj się")
+        login_button = QPushButton("Log in")
         login_button.clicked.connect(self.login_to_facebook)
 
-        self.remember_checkbox = QCheckBox("Zapamiętaj login (bez hasła)")
+        self.remember_checkbox = QCheckBox("Remember me (without password)")
 
         grid.addWidget(login_label, 0, 0)
         grid.addWidget(self.login, 0, 1)
@@ -40,7 +40,7 @@ class MessengerColorChangerLogin(QtGui.QWidget):
         self.remember_load()
 
         self.setLayout(grid)
-        self.setGeometry(600, 300, 600, 250)  # polozeniex, polozeniey, x, y
+        self.setGeometry(600, 300, 600, 250)
         self.setWindowTitle("Zaloguj się")
         self.show()
 
@@ -86,7 +86,7 @@ class MessengerColorChanger(QtGui.QWidget):
             loginwindow.hide()
             self.setupUi(messenger)
         except:
-            QMessageBox.critical(self, "Błędzik", "Nieprawidłowy login lub hasło.",
+            QMessageBox.critical(self, "Error", "Incorrect login or password.",
                                  QMessageBox.Ok)
             print("Unexpected error:", sys.exc_info()[0])
 
@@ -128,7 +128,7 @@ class MessengerColorChanger(QtGui.QWidget):
         self.color_picker.setOption(QColorDialog.DontUseNativeDialog, True)
         grid.addWidget(self.color_picker, 1, 1, 1, 1)
 
-        button = QPushButton("Do dzieła!")
+        button = QPushButton("JUST DO IT!")
         button.clicked.connect(self.change_color)
         grid.addWidget(button, 2, 0, 1, 0)
 
