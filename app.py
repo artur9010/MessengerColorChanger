@@ -50,8 +50,6 @@ class MessengerColorChangerLogin(QtGui.QWidget):
         else:  # remove data.json if remeber checkbox is unchecked
             try:
                 os.remove("data.json")
-            except FileNotFoundError:
-                print("data.json not found, not removing")
             except:
                 print("Unexpected error:", sys.exc_info()[0])
         login = instance.login.text()

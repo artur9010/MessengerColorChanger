@@ -1,1 +1,3 @@
-community/python-pyside
+[brew] pyside
+[pip] requests
+[pip, only python2] enum34
